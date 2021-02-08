@@ -42,9 +42,19 @@ class Card {
     }
 
     func cardInfo() -> String {
-        if self.suits == Suits.joker {
-            return self.suits.rawValue
+        var result: String
+        switch self.suits {
+        case .spade:
+            result = "s"
+        case .clubs:
+            result = "c"
+        case .diamond:
+            result = "d"
+        case .heart:
+            result = "h"
+        case .joker:
+            return "j"
         }
-        return self.suits.rawValue + self.num.rawValue
+        return result + self.num.rawValue
     }
 }

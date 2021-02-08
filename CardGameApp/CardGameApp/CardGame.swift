@@ -24,6 +24,7 @@ struct CardGame {
     }
 
     mutating func gameStart() {
+        pokerCard.shuffle()
         for i in 0..<self.personCnt {
             for _ in 0..<cardCnt {
                 persons[i].addCard(card: pokerCard.removeOne())
@@ -32,6 +33,10 @@ struct CardGame {
         for _ in 0..<cardCnt {
             dealer.addCard(card: pokerCard.removeOne())
         }
+    }
+
+    mutating func playerInfo(player: Participant) -> [Card] {
+        return player.card
     }
 
     mutating func printCardStatus() {

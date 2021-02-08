@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 struct Participant {
+    // card 갯수
     let count: Int
     var card: [Card] = []
+    var cardList: [UIImageView] = []
     var dealer: Bool
 
     init(_ count: Int, dealer: Bool) {
@@ -21,4 +24,13 @@ struct Participant {
         self.card.append(card)
     }
 
+    mutating func addcardView(_ width: CGFloat) {
+        for i in 0..<count {
+            let image = UIImage(named: card[i].cardInfo())
+            cardList.append(UIImageView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: width, height: width * 1.27))))
+            cardList[i].image = image
+            cardList[i].layer.cornerRadius = 5
+            cardList[i].clipsToBounds = true
+        }
+    }
 }
