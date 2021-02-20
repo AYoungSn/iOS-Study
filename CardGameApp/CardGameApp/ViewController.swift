@@ -26,56 +26,83 @@ class ViewController: UIViewController {
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "bg_pattern.png")!)
 
         let topPadding = UIApplication.shared.windows[0].safeAreaInsets.top
-        let bottomPadding = UIApplication.shared.windows[0].safeAreaInsets.bottom
+//        let bottomPadding = UIApplication.shared.windows[0].safeAreaInsets.bottom
 
         addButton(y: topPadding + 10, button: cardType, action: #selector(cardtypeChanged(cardtype:)))
         addButton(y: cardType.frame.maxY + playerSelect.frame.midY + 10, button: playerSelect, action: #selector(playerCntChanged(player:)))
 
-        stackArea = CGSize(width: self.view.bounds.width, height: view.bounds.height - bottomPadding - playerSelect.frame.maxY - 10)
+//        stackArea = CGSize(width: self.view.bounds.width, height: view.bounds.height - bottomPadding - playerSelect.frame.maxY - 10)
         self.becomeFirstResponder()
-        stack.axis = .vertical
-        stack.alignment = .fill
-        stack.distribution = .fillEqually
 
-        let x = CGFloat(view.bounds.width / CGFloat(cardCnt + 2))
-        stack.frame = CGRect(origin: CGPoint(x: x / 2, y: playerSelect.frame.maxY + 10), size: stackArea)
+//        let x = CGFloat(view.bounds.width / CGFloat(cardCnt + 2))
+//        stack.frame = CGRect(origin: CGPoint(x: x / 2, y: playerSelect.frame.maxY + 10), size: stackArea)
         self.view.addSubview(stack)
 
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
+
+    }
+
     func pokerGame() {
+        print("cardCnt: \(cardCnt), playerCnt: \(playerCnt)")
         poker = CardGame(cardCnt, playerCnt)
         poker.gameStart()
         for i in 0..<playerCnt {
             labels.append(UILabel())
             labels[i].text = "Player\(i + 1)"
-            poker.persons[i].addcardView(CGFloat(view.bounds.width / CGFloat(cardCnt + 2)))
-            stack.addArrangedSubview(labels[i])
+            labels[i].textColor = .white
+            poker.persons[i].addcardView(CGFloat(self.view.bounds.width / CGFloat(cardCnt)))
             makesubView(poker.persons[i].cardList, labels[i])
         }
         labels.append(UILabel())
         labels[playerCnt].text = "Dealer"
+        labels[playerCnt].textColor = .white
         stack.addArrangedSubview(labels[playerCnt])
         poker.dealer.addcardView(CGFloat(view.bounds.width / CGFloat(cardCnt + 2)))
         makesubView(poker.dealer.cardList, labels[playerCnt])
     }
 
     func makesubView(_ imgviews: [UIImageView], _ label: UILabel) {
-        let view = UIView()
+        let subview = UIStackView()
+        subview.axis = .horizontal
+        subview.spacing = -7
+        subview.alignment = .fill
+        subview.distribution = .fillEqually
+        subview.translatesAutoresizingMaskIntoConstraints = false
+        stack.addArrangedSubview(label)
         for i in 0..<cardCnt {
-            imgviews[i].frame.origin.y = label.frame.maxY
+//            imgviews[i].frame.origin.y = label.frame.maxY
+            imgviews[i].heightAnchor.constraint(equalTo: imgviews[i].widthAnchor, multiplier: 1.27).isActive = true
             if i > 0 {
-                imgviews[i].frame.origin.x = imgviews[i - 1].frame.maxX
+//                imgviews[i].frame.origin.x = imgviews[i - 1].frame.maxX
             }
-            view.addSubview(imgviews[i])
+            subview.addArrangedSubview(imgviews[i])
         }
-        stack.addArrangedSubview(view)
-        stack.spacing = 10
+        self.stack.addArrangedSubview(subview)
     }
 
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        print("motionEnded")
         if motion == .motionShake {
-//            stack.removeFromSuperview()
+            stack.removeFromSuperview()
+            stack = UIStackView()
+            stack.axis = .vertical
+            stack.alignment = .fill
+            stack.spacing = 10
+            stack.translatesAutoresizingMaskIntoConstraints = false
+
+            view.addSubview(stack)
+            stack.topAnchor.constraint(equalTo: playerSelect.bottomAnchor, constant: 15).isActive = true
+            stack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+            stack.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+//            stack.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30).isActive = true
+//            let x = CGFloat(view.bounds.width / CGFloat(cardCnt + 2))
+//            stack.frame = CGRect(origin: CGPoint(x: x / 2, y: playerSelect.frame.maxY + 10), size: stackArea)
+//            stack.backgroundColor = .brown
+
+            print("pokerGame")
             pokerGame()
         }
     }

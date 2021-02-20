@@ -7,7 +7,14 @@
 
 import Foundation
 
-class Card {
+class Card: Comparable {
+    static func < (lhs: Card, rhs: Card) -> Bool {
+        return lhs.num < rhs.num
+    }
+
+    static func == (lhs: Card, rhs: Card) -> Bool {
+        return lhs.num == rhs.num
+    }
 
     var suits: Suits
     var num: Ranks
@@ -21,7 +28,7 @@ class Card {
     }
 
     enum Ranks: String, CaseIterable {
-        case ace = "A"
+        case ace = "1"
         case two = "2"
         case three = "3"
         case four = "4"
@@ -31,9 +38,9 @@ class Card {
         case eight = "8"
         case nine = "9"
         case ten = "10"
-        case eleven = "J"
-        case twelve = "Q"
-        case thirteen = "K"
+        case eleven = "11" // J
+        case twelve = "12" // Q
+        case thirteen = "13" // K
     }
 
     init(_ suit: Suits, _ num: Ranks) {
@@ -55,6 +62,30 @@ class Card {
         case .joker:
             return "j"
         }
-        return result + self.num.rawValue
+        var rank: String
+        switch num.rawValue {
+        case "1":
+            rank = "A"
+        case "11":
+            rank = "J"
+        case "12":
+            rank = "Q"
+        case "13":
+            rank = "K"
+        default:
+            rank = num.rawValue
+
+        }
+        return result + rank
+    }
+}
+
+extension Card.Ranks: Comparable {
+    static func < (lhs: Card.Ranks, rhs: Card.Ranks) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
+
+    static func == (lhs: Card.Ranks, rhs: Card.Ranks) -> Bool {
+        return lhs.rawValue == rhs.rawValue
     }
 }
